@@ -1,0 +1,13 @@
+import console;
+import libquiz.template;
+import libquiz;
+
+console.open();
+
+var questions = libquiz.template.get_exercise_list_from_template("normal", '\\data', 75);
+console.log(table.tostring(questions))
+var packed = libquiz.pack_papper(questions);
+libquiz.save_papper(packed, "C:\Users\Anson\OneDrive\桌面\paper.quiz", "123")
+
+console.log("导出完毕")
+console.pause();

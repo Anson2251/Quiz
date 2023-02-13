@@ -1,0 +1,142 @@
+// 模板
+namespace libquiz{
+	namespace template{
+		list_template = function(){
+			import fsys;
+			import table;
+			import string;
+			
+			var files, dirs = fsys.list('\\template\\');
+			var result = {};
+			
+			while(var i = 0; i++; !!files[i] == true) {
+				var file = files[i];
+				file = string.split(file, ".");
+				table.pop(file);
+				file = string.join(file, ".");
+  				table.push(result, file);
+			}
+			
+			return result;
+		}
+		
+	    get_template = function(name, node_map){
+	        if(!name) return {};
+	        if(!node_map) node_map = node_map || self.node_map;
+	        
+	        import table;
+	        import string;
+	        import string.xml;
+	        
+	        var path = '\\template\\' + name + ".xml";
+	        
+	        var result = table.array();
+	        
+	        var xml = string.xml(string.load(path));
+			xml.enumNodes(   
+    			function(parentElement,index,tagName,childCount,xNode){  
+        			select(tagName){
+            			case "question" {
+                			var node_info = {};
+                			
+                			for k,v in table.eachName(node_map){
+                				if(xNode.getAttribute(k)) node_info[k] = xNode.getAttribute(k);
+                				
+                			}
+                			table.push(result, node_info);
+            			}
+        			} 
+				//console.log(index,tagName,childCount,xNode)
+    			},/*可选指定节点名*/  
+			)
+			
+			return result
+
+	    }
+	    
+	    get_exercise_list_from_map = function(mainDB, map, given_similarity, use_cache){
+	        import math;
+	        import table;
+	        
+	        use_cache = use_cache || true;
+	        if(!map) return;
+	        blacklist = blacklist || {};
+	        
+	        if(!self.question_cache || use_cache != true){
+	            self.question_cache = {};
+	            mainDB.each_exercise(function(stem){
+	            	table.push(self.question_cache, stem);
+	            })
+	        }
+	        
+	        var cache = table.clone(self.question_cache);
+	        var result = {};
+	        
+	        for i,stem in table.eachIndex(cache){
+	            var stem_similarity = 0;
+	            var map_len = 0;
+	            
+	            try{
+	                for key, value in table.eachValue(map, lambda(a,b) a > b ){
+	                	if(stem.rule[key] == value || value === "*") {
+	                	    if(stem_similarity == 0) stem_similarity++;
+	                		stem_similarity++; //相似度打分
+	                	}
+	                	map_len++;
+	                }
+	            }
+
+	            stem_similarity =  math.round(stem_similarity / map_len * 100); //计算相似度 0-100
+	            
+	            if(stem_similarity >= given_similarity){
+	                table.push(result, stem);
+	            }
+	        }
+
+	        return result || {};
+	    }
+	    
+	    get_exercise_list_from_template = function(template_name, db_path, given_similarity){
+	        import table;
+	        import time;
+	        import math;
+			import libquiz.dataBase;
+			
+			var template = self.get_template(template_name);
+			var dataBase = libquiz.dataBase(db_path);
+			
+			var blackList = {};
+			var result = {};
+						
+			for index, value in table.eachIndex(template){
+				var stem_available = self.get_exercise_list_from_map(dataBase, value, given_similarity);
+				var stem_avail_backup = table.filter(stem_available,
+					function(v,index){
+						if(!table.find(blackList, table.tostring(v))) return true;
+					}
+				)
+				
+				var stem_choosed;
+				
+				if(table.len(stem_avail_backup) >= 1){
+					stem_choosed = table.shift(stem_avail_backup);
+					var new_blacklist_item = table.tostring(stem_choosed);
+					if(!table.find(blackList, new_blacklist_item)) table.push(blackList, new_blacklist_item);
+				}else{
+					var new_index = math.round(math.random(1, table.len(stem_available)));					
+					stem_choosed = stem_available[new_index];
+				}
+				
+				table.push(result, stem_choosed);
+			}
+			return result;
+	    }
+	    
+	    node_map = {
+			["is_multiple"] = false;
+			["cognition_difficulty"] = 0;
+			["exercise_difficulty"] = 0;
+			["knowledge_point"] = "";
+		}
+	}	
+}

@@ -1,0 +1,75 @@
+import win.ui;
+
+class edit_exercise{
+	ctor(parent, stem, path){
+		
+		import win.ui;
+		import win.ui.minmax;
+		import crypt.bin;
+		import libquiz;
+
+		this = ..win.form(text="题目编辑";right=800;bottom=600;parent=parent)
+	
+		win.ui.minmax(this);
+		this.webview = libquiz.init_blink(this);
+		//this.webview.showDevTools();
+		
+		this.webview.external = {
+			crypt = crypt.bin;
+			libquiz = libquiz;
+			get_stem = function(){
+				return this.stem;
+			}
+			get_path = function(){
+				return this.stemPath;
+			}
+			end_modal = function(arg){
+				import web.json;
+				this.endModal(web.json.parse(arg));
+			}
+			
+			convert_pasteStr = function(str){
+				import string.xml;
+				
+				var html = string.xml(str);				
+
+				html.enumNodes(   
+    				function(parentElement,index,tagName,childCount,xNode){   
+						if(tagName == "img"){
+							import table;
+							import string;
+							import crypt.bin;
+							
+							if(xNode.src && table.shift(string.split(xNode.src, ":")) === "file"){
+								var path = string.replace(xNode.src, "@file:///", "");
+								var exName = table.pop(string.split(path, "."));
+								try{
+									var encoded_image = crypt.bin.encodeBase64(string.load(path));
+									xNode.src =  "data:image/" + exName + ";base64, " + encoded_image;
+								}
+							}
+						}
+    				},/*可选指定节点名*/  
+				)
+
+				
+				var result = html.outerXml(true);
+				
+				return result;
+			}
+		}
+		
+		var url = "\dlg\edit_exercise.html";
+			
+		this.stem = stem;
+		this.stemPath = path;
+		
+		this.webview.go(url);
+	};
+}
+
+if( !owner ) edit_exercise().doModal();
+
+/**intellisense()
+edit_exercise() = 窗口类\n!winform.
+end intellisense**/

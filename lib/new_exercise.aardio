@@ -1,0 +1,37 @@
+//窗口，新增题目
+namespace libquiz{
+	namespace exercise{
+		function add(stem){
+			import win.ui;
+			import win.ui.minmax;
+			import crypt.bin;
+			import libquiz;
+			
+			var winform = win.form(text="Quiz";right=800;bottom=600;clipch=1;composited=1)
+		
+			win.ui.minmax(winform);
+			
+			var webview = libquiz.init_blink(winform);
+			
+			webview.external = {
+				crypt = crypt.bin;
+				libquiz = libquiz;
+				get_stem = function(){
+					return winform.stem
+				}
+			}
+			
+			var url = "\dlg\new_exercise.html";
+			
+			winform.stem = stem;
+			
+			webview.go(url);
+			
+			
+			winform.show();
+			win.loopMessage();
+		}
+	}
+}
+
+libquiz.exercise.add(string.load("D:\Quiz\data\物理\知识点1\test08.txt"))

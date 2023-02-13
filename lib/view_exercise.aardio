@@ -1,0 +1,20 @@
+import win.ui;
+import web.blink.form;
+import crypt.bin;
+import libquiz;
+
+var winform = win.form(text="题目预览";right=759;bottom=469;composited=1);
+
+winform.html = libquiz.init_blink(winform);
+winform.html.external = {
+	libquiz = libquiz;
+	exercise = {
+		get = function(){
+			return winform.stem;
+		}
+	}
+};
+//winform.html.showDevTools();
+winform.html.go("\dlg\view_exercise.html");
+winform.show();
+win.loopMessage();

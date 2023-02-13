@@ -1,0 +1,134 @@
+﻿//QUIZ 库
+namespace libquiz{
+	init_blink = function(form){
+		import web.blink.form;
+		web.blink.enableDpiScaling();
+		var webview = web.blink.form(form);
+
+		return webview;
+	}
+
+	get_value_knowledge_point = function(){
+		import choose_knowledge_point;
+		
+		var chooseDlg = choose_knowledge_point();
+		var result = chooseDlg.doModal()
+		return result;
+	}
+	
+	get_value_inputBox = function(title, info, hwnd){
+		import inputBox;
+		
+		inputbox = inputBox(hwnd);
+		inputbox.text = title;
+		inputbox.info.text = info;
+		return inputbox.doModal();
+	}
+	
+	pack_exercise = function(arg){
+		import crypt.bin;
+		import web.json;
+		
+		if(!arg.answer || !arg.text || !arg.rule) return;
+		var rule = crypt.bin.encodeBase64(web.json.stringify(arg.rule));
+		var answer = crypt.bin.encodeBase64(web.json.stringify(arg.answer));
+		var text = crypt.bin.encodeBase64(arg.text);
+		
+		var stem = {
+            rule = rule;
+            text = text;
+            answer = answer;
+        }
+        
+        return web.json.stringify(stem);
+	}
+	
+	unpack_exercise = function(arg, needJSON){
+		import crypt.bin;
+		import web.json;
+		
+		if(!arg) return;
+		var stem = web.json.parse(arg);
+		var rule = web.json.parse(crypt.bin.decodeBase64(stem.rule));
+		var answer = web.json.parse(crypt.bin.decodeBase64(stem.answer));
+		var text = crypt.bin.decodeBase64(stem.text);
+		
+		var result = {
+            rule = rule;
+            text = text;
+            answer = answer;
+        }
+        
+        var resultFinal = needJSON ? web.json.stringify(result) : result;
+        
+        return resultFinal;
+	}
+	
+	pack_paper = function(questions, info){
+		import web.json;
+		import crypt.bin;
+		import table;
+		
+		for i,v in table.eachIndex(questions){
+			questions[i] = crypt.bin.encodeBase64(self.pack_exercise(v))
+		}
+		
+		var result = {
+			questions = questions,
+			info = info
+		}
+		
+		var packed = crypt.bin.encodeBase64(web.json.stringify(result));
+		
+		return packed;
+	}
+	
+	unpack_paper = function(str){
+		import crypt.bin;
+		import web.json;
+		import table;
+		
+		var paper = web.json.parse(str);
+		var questions = paper.questions;
+		var info = paper.info;
+		
+		for i,v in table.eachIndex(questions){
+			questions[i] = self.unpack_exercise(crypt.bin.decodeBase64(questions[i]));
+		}
+		
+		return questions, info;
+	}
+	
+	load_paper = function(path, password){
+		import crypt.aes;  
+		import crypt.bin;
+		import web.json;
+		import string;
+		
+		if(!path) return null, -1;
+		password = password || "1234";
+		
+		var aes = crypt.aes();
+		aes.setPassword(password);
+		
+		var str = aes.decrypt(string.load(path));
+		
+		if(str) str = crypt.bin.decodeBase64(str);
+		else return null, -2;
+
+		if((web.json.tryParse(str))) return str, 0;
+		else return null, -3; 
+	}
+	
+	save_paper = function(data, path, password){
+		import crypt.aes;  
+		import string;
+		var aes = crypt.aes();  
+
+		aes.setPassword(password || "1234");  
+
+		var sstr = aes.encrypt(data);  
+		
+		string.save(path, sstr);
+	}
+}

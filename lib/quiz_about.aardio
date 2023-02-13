@@ -1,0 +1,23 @@
+﻿import win.ui;
+
+class quiz_about{
+	ctor(parent,tParam){
+	/*DSG{{*/
+	this = ..win.form(text="关于";right=303;bottom=223;border="dialog frame";max=false;min=false;parent=parent)
+	this.add(
+	groupbox={cls="groupbox";text="鸣谢 - 本项目使用的第三方资料";left=16;top=112;right=288;bottom=208;dl=1;dr=1;dt=1;edge=1;z=3};
+	plus={cls="plus";text="Quiz";left=0;top=16;right=288;bottom=56;dl=1;dr=1;dt=1;font=LOGFONT(h=-30);valign="bottom";z=1};
+	plus2={cls="plus";text="Teacher";left=0;top=56;right=288;bottom=88;dl=1;dr=1;dt=1;font=LOGFONT(h=-16);valign="top";z=2};
+	static2={cls="static";text="aardio";left=32;top=136;right=272;bottom=152;align="center";center=1;dl=1;dr=1;dt=1;transparent=1;z=4};
+	static3={cls="static";text="Miniblink (Apache License 2.0)";left=32;top=160;right=272;bottom=176;align="center";center=1;dl=1;dr=1;dt=1;transparent=1;z=5};
+	static4={cls="static";text="wangEditor (MIT License)";left=32;top=184;right=272;bottom=200;align="center";center=1;dl=1;dr=1;dt=1;transparent=1;z=6}
+	)
+	/*}}*/
+	
+	};
+}
+
+if( !owner ) quiz_about().doModal();
+/**intellisense()
+quiz_about() = 窗口类\n!winform.
+end intellisense**/

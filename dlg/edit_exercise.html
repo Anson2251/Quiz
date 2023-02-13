@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>编辑习题</title>
+
+    <style>
+        html, body{
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./css/editQuestion.css">
+    <link rel="stylesheet" type="text/css" href="./css/choice_question.css">
+    <link rel="stylesheet" type="text/css" href="./css/basic_ctrls.css">
+    <link rel="stylesheet" type="text/css" href="./css/css_theme.css">
+
+    <script src="./js/quizCtrls/editQuestion.js"></script>
+</head>
+
+<body>
+    <script>
+        var aardio = external;
+
+
+        function importStem(editQuestionCtrl, stemInput) {
+            if (stemInput) {
+                let stem = JSON.parse(aardio.libquiz.unpack_exercise(stemInput, true));
+
+                editQuestionCtrl.setText(stem.text)
+                editQuestionCtrl.setOptions(stem.answer.items);
+                editQuestionCtrl.setAnswer(stem.answer.answer);
+
+                for(item in stem.rule){
+                    editQuestionCtrl.setConfigItem(item, stem.rule[item]);
+                }
+
+                editQuestionCtrl.preview();
+            }
+        }
+
+        let editStem = new quizCtrls.editQuestion(document.body);
+        editStem.setOnStore(function(handle, question){
+            aardio.end_modal(JSON.stringify({
+                stem: aardio.crypt.encodeBase64(question),
+                path: editStem.getConfigItem("knowledge_point")
+            }))
+        });
+
+        let questionImport = aardio.get_stem();
+        if(questionImport) importStem(editStem, questionImport);
+    </script>
+</body>
+
+</html>

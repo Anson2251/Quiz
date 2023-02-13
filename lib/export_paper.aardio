@@ -1,0 +1,113 @@
+import win.ui;
+
+class export_paper{
+	ctor(parent,tParam){
+	import choose_knowledge_point;
+	import table;
+	import string;
+	import libquiz;
+	import libquiz.template;
+	import fsys.dlg;
+	import fsys;
+	import win;
+	/*DSG{{*/
+	this = ..win.form(text="导出试卷";right=535;bottom=319;border="dialog frame";max=false;min=false;parent=parent)
+	this.add(
+	available_time={cls="checkbox";text="限制答题时间为启用时间至截止时间";left=280;top=168;right=512;bottom=192;checked=1;dl=1;dt=1;z=24};
+	begin_time={cls="datetimepick";left=104;top=72;right=256;bottom=96;dl=1;dt=1;edge=1;z=8};
+	button={cls="button";text="浏览";left=216;top=136;right=256;bottom=160;dl=1;dt=1;z=13};
+	button2={cls="button";text="浏览";left=216;top=168;right=256;bottom=192;dl=1;dt=1;z=16};
+	button3={cls="button";text="导出试卷";left=272;top=272;right=520;bottom=296;dl=1;dt=1;z=23};
+	button4={cls="button";text="浏览";left=224;top=272;right=264;bottom=296;dl=1;dt=1;z=30};
+	default_password={cls="radiobutton";text="使用默认密码 (1234)";left=280;top=200;right=512;bottom=224;checked=1;dl=1;dt=1;group=1;z=25};
+	difficulty={cls="combobox";left=104;top=200;right=256;bottom=224;dl=1;dt=1;edge=1;items={"容易";"中等";"困难"};mode="dropdown";z=18};
+	edit_dbPath={cls="edit";left=360;top=40;right=512;bottom=64;dl=1;dt=1;edge=1;readonly=1;z=32};
+	edit_kwgPnt={cls="edit";left=104;top=168;right=216;bottom=192;dl=1;dt=1;edge=1;z=15};
+	edit_password={cls="edit";left=368;top=232;right=512;bottom=256;dl=1;dt=1;edge=1;z=27};
+	edit_similarity={cls="edit";text="75";left=360;top=104;right=512;bottom=128;dl=1;dt=1;edge=1;num=1;z=34};
+	edit_subject={cls="edit";left=104;top=136;right=216;bottom=160;dl=1;dt=1;edge=1;z=12};
+	edit_timeLimit={cls="edit";left=104;top=232;right=216;bottom=256;dl=1;dt=1;edge=1;num=1;z=20};
+	edit_title={cls="edit";left=104;top=40;right=256;bottom=64;dl=1;dt=1;edge=1;z=5};
+	end_time={cls="datetimepick";left=104;top=104;right=256;bottom=128;dl=1;dt=1;edge=1;z=10};
+	groupbox={cls="groupbox";text="试卷信息";left=16;top=16;right=264;bottom=264;dl=1;dt=1;edge=1;z=2};
+	groupbox2={cls="groupbox";text="试卷内容";left=272;top=16;right=520;bottom=136;dl=1;dt=1;edge=1;z=1};
+	groupbox3={cls="groupbox";text="试卷安全";left=272;top=144;right=520;bottom=264;dl=1;dt=1;edge=1;z=22};
+	password={cls="radiobutton";text="自定义密码";left=280;top=232;right=368;bottom=256;dl=1;dt=1;z=26};
+	progress={cls="progress";left=0;top=304;right=536;bottom=320;db=1;dl=1;dr=1;edge=1;max=100;min=0;z=35};
+	save_place={cls="edit";left=88;top=272;right=224;bottom=296;dl=1;dt=1;edge=1;multiline=1;z=29};
+	static={cls="static";text="使用模板：";left=280;top=72;right=352;bottom=96;align="right";center=1;dl=1;dt=1;transparent=1;z=4};
+	static10={cls="static";text="保存位置：";left=16;top=272;right=88;bottom=296;align="right";center=1;dl=1;dt=1;transparent=1;z=28};
+	static11={cls="static";text="使用题库：";left=280;top=40;right=352;bottom=64;align="right";center=1;dl=1;dt=1;transparent=1;z=31};
+	static12={cls="static";text="相似度：";left=280;top=104;right=352;bottom=128;align="right";center=1;dl=1;dt=1;transparent=1;z=33};
+	static2={cls="static";text="试卷标题：";left=24;top=40;right=96;bottom=64;align="right";dl=1;dt=1;transparent=1;z=6};
+	static3={cls="static";text="启用时间：";left=24;top=72;right=96;bottom=96;align="right";center=1;dl=1;dt=1;transparent=1;z=7};
+	static4={cls="static";text="截止时间：";left=24;top=104;right=96;bottom=128;align="right";center=1;dl=1;dt=1;transparent=1;z=9};
+	static5={cls="static";text="学科：";left=24;top=136;right=96;bottom=160;align="right";center=1;dl=1;dt=1;transparent=1;z=11};
+	static6={cls="static";text="知识点：";left=24;top=168;right=96;bottom=192;align="right";center=1;dl=1;dt=1;transparent=1;z=14};
+	static7={cls="static";text="试卷难度：";left=24;top=200;right=96;bottom=224;align="right";center=1;dl=1;dt=1;transparent=1;z=17};
+	static8={cls="static";text="时间限制：";left=24;top=232;right=96;bottom=256;align="right";center=1;dl=1;dt=1;transparent=1;z=19};
+	static9={cls="static";text="分钟";left=224;top=232;right=256;bottom=256;center=1;dl=1;dt=1;transparent=1;z=21};
+	use_template={cls="combobox";left=360;top=72;right=512;bottom=96;dl=1;dt=1;edge=1;items={};mode="dropdown";z=3}
+	)
+	/*}}*/
+	
+	this.button3.oncommand = function(id,event){
+		var info = {
+			title = this.edit_title.text;
+			begin_time = this.begin_time.text;
+			end_time = this.end_time.text;
+			subject = this.edit_subject.text;
+			knowledge_point = this.edit_kwgPnt.text;
+			difficulty = this.difficulty.selIndex;
+			time_limit = this.edit_timeLimit.text;
+			only_available_in_legal_time = this.available_time.checked;
+		}
+		
+		var password = "1234";
+		if(this.password.checked) password = this.edit_password.text;
+		
+		this.progress.pos = 0;
+		var questions = libquiz.template.get_exercise_list_from_template(this.use_template.selText, this.edit_dbPath.text, (tonumber(this.edit_similarity.text)));
+		this.progress.pos = 30;
+		var packed = libquiz.pack_paper(questions, info);
+		this.progress.pos = 60;
+		
+		if(string.trim(this.save_place.text) === "") {
+			this.save_place.text = fsys.dlg.saveOp("Quiz 试卷文件|*.quiz|所有文件|*.*", "保存试卷", fsys.getSpecial(0/*_CSIDL_DESKTOP*/), this);
+		}
+		libquiz.save_paper(packed, this.save_place.text, password);
+		
+		this.progress.pos = 100;
+		win.msgbox("试卷导出成功", " 信息", 0/*_MB_OK*/ | 0x40/*_MB_ICONINFORMATION*/, this.hwnd);
+	}
+
+    this.button4.oncommand = function(id,event){
+		this.save_place.text = fsys.dlg.saveOp("Quiz 试卷文件|*.quiz|所有文件|*.*", "保存试卷", fsys.getSpecial(0/*_CSIDL_DESKTOP*/), this);
+	}
+
+    this.button2.oncommand = function(id,event){
+		var choose_klgPnt = choose_knowledge_point();
+		var result = choose_klgPnt.doModal(this);
+		if(result){
+			var choose_klgPnt_tmp = string.split(result, '\\');
+			table.shift(choose_klgPnt_tmp);
+			this.edit_kwgPnt.text = string.join(choose_klgPnt_tmp, '\\');
+		}
+	}
+
+    this.button.oncommand = function(id,event){
+		var choose_subject = choose_knowledge_point();
+		var subject = choose_subject.doModal(this);
+		if(subject) this.edit_subject.text = table.shift(string.split(subject, '\\'));	
+	}
+	
+	this.edit_dbPath.text = '\\data';	
+	this.use_template.items = libquiz.template.list_template();
+
+    };
+}
+
+if( !owner ) export_paper().doModal();
+/**intellisense()
+export_paper() = 窗口类\n!winform.
+end intellisense**/

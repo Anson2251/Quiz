@@ -1,0 +1,263 @@
+﻿// 数据库管理
+namespace libquiz{
+	class dataBase{		
+		ctor(db_path, winform){
+			import fsys;
+			this.path = !!db_path ? db_path : '\\data';
+			this.winform = winform;
+			
+			if(!fsys.isDir(this.path)){
+				fsys.createDir("\data", false);
+			}
+		};
+		
+		remove_item = function(path){
+			fsys.delete(this.path + '\\' + path);
+			this.after_reload();
+		};
+		
+		save_item = function(path, name, data, is_override){
+			import string;
+			import libquiz;
+			import choose_knowledge_point;
+
+			if(!path){
+				var chooseDlg = libquiz.choose_knowledge_point();
+				path = chooseDlg.doModal();
+			}
+			
+			if(!name) name = libquiz.get_value_inputBox("输入标题", "请输入题目标题") + ".txt";
+			
+			string.save(this.path + "\\" + path + "\\" + name, data, !is_override);
+		}
+		
+		create_section = function(path, name){
+			import fsys;
+			
+			if(!name) name = this.get_value_inputBox("新分区", "新分区名称:");
+			fsys.createDir(this.path + '\\' + path + '\\' + name, false);
+			this.after_reload();
+		}
+		
+		create_section_root = function(name){
+			import fsys;
+			
+			if(!name) name = this.get_value_inputBox("新分区", "新分区名称:");
+			fsys.createDir(this.path + '\\' + name, false);
+			this.after_reload();
+		}
+		
+		create_section_same_level = function(path, name){
+			import fsys;
+			import table;
+			import string;
+			
+			if(!name) name = this.get_value_inputBox("新分区", "新分区名称:");
+			
+			path = string.split(path, '\\');
+			table.pop(path);
+			path = string.join(path, '\\');
+			
+			fsys.createDir(this.path + '\\' + path + '\\' + name, false);
+			this.after_reload();
+		}
+		
+		each_exercise = function(callBack, ...){
+			var arg = { ... }
+
+			import fsys;
+			import table;
+			import libquiz;
+			import string;
+			
+			
+			cur_dir = this.path;
+			
+			function get_tree(cur_dir){			
+				var data = {};
+				var file, dir = fsys.list(cur_dir);
+				
+				
+				while(var i = 0; i++; !!file[i] == true) {
+					var cur_path = cur_dir + "\\" + file[i];
+					var stem = libquiz.unpack_exercise(string.load(cur_path));
+  					callBack(stem, path, arg);
+				}
+				
+				while(var i = 0; i++; !!dir[i] == true) {
+  					get_tree(cur_dir + "\\" + dir[i]);
+				}
+			}
+			
+			get_tree(cur_dir)
+		}
+		
+		filter_exercise = function(callBack){
+			import fsys;
+			import table;
+			import libquiz;
+			import string;
+			//import console;
+			
+			var result = {};
+			
+			cur_dir = this.path;
+			
+			function get_tree(cur_dir){			
+				var data = {};
+				var file, dir = fsys.list(cur_dir);
+				
+				
+				while(var i = 0; i++; !!file[i] == true) {
+					var cur_path = cur_dir + "\\" + file[i];
+					//console.log( cur_path)
+					var stem = libquiz.unpack_exercise(string.load(cur_path));
+  					if(callBack(stem, path) === true){
+  						table.push(result, stem);
+  					}
+  					
+
+				}
+				
+				while(var i = 0; i++; !!dir[i] == true) {
+					//console.log(cur_dir + "\\" + dir[i])
+  					get_tree(cur_dir + "\\" + dir[i]);
+				}
+			}
+			
+			get_tree(cur_dir)
+			
+			return result;
+		}
+		
+		
+		get_value_inputBox = function(title, info){
+			import inputBox;
+			inputbox = inputBox();
+			inputbox.text = title;
+			inputbox.info.text = info;
+			var result = inputbox.doModal();
+			return !!result ? result : "";
+		}
+		
+		get_tree_items = function(cur_dir){
+			import fsys;
+			import table;
+			
+			var count = 0;	
+			cur_dir = !!cur_dir ? this.path + '\\' + cur_dir : this.path;
+			
+			function get_tree(cur_dir){			
+				var data = {};
+				var file, dir = fsys.list(cur_dir);
+				
+				
+				while(var i = 0; i++; !!file[i] == true) {
+  					table.push(data, file[i]);
+  					count++;
+			
+				}
+				
+				while(var i = 0; i++; !!dir[i] == true) {
+  					data[dir[i]] = get_tree(cur_dir + "\\" + dir[i]);
+				}
+				
+				return data;
+			}
+			
+			var result = get_tree(cur_dir);
+			return result, count;	
+		}
+		
+		get_tree_sections = function(cur_dir){
+			import fsys;
+			import table;
+			
+			var count = 0;
+			cur_dir = !!cur_dir ? this.path + '\\' + cur_dir : this.path;
+			
+			function get_tree(cur_dir){			
+				var data = {};
+				var file, dir = fsys.list(cur_dir);
+				
+				while(var i = 0; i++; !!dir[i] == true) {
+  					data[dir[i]] = get_tree(cur_dir + "\\" + dir[i]);
+  					count++;
+				}
+				
+				return data;
+			}
+			
+			var result = get_tree(cur_dir);
+			return result, count;
+		}
+		
+		get_items = function(cur_dir){
+			import fsys;
+			import table;
+			
+			cur_dir = !!cur_dir ? this.path + '\\' + cur_dir : this.path;
+			
+			var files, dirs = fsys.list(cur_dir);
+			return files;
+		}
+		
+		load_item = function(path){
+			import string;
+			import fsys;
+			import io;
+			
+			if(!path) return "";	
+			path = this.path + '\\' + path;
+			
+			if(fsys.isDir(path)) return "";
+			if(!io.exist(path, 6)) return "";
+			
+			var result = string.load(path);
+			
+			return result;
+		}
+		
+		is_section = function(cur_dir){
+			import fsys;
+			
+			cur_dir = !!cur_dir ? this.path + '\\' + cur_dir : this.path;
+			return fsys.isDir(cur_dir)
+		}
+		
+		after_reload = function(){ };	
+	}
+}
+
+
+/***intellisense(libquiz)
+dataBase = 题目数据库
+dataBase(.(数据库地址，父窗口) =  创建一个输入对话框,所有参数可选\n设置密码模式输入框输入内容显示为星号
+dataBase() = !libquizdatabase.
+end intellisense***/
+
+/***intellisense(!libquizdatabase)
+remove_item() = 移除一个项目\n分区或项目均可
+remove_item(.(path) = 移除一个项目\n参数 @path 为数据库地址
+save_item() = 保存一个新项目
+remove_item(.(path, name, data, isOverride) = 保存一个新项目\n参数 @path 为数据库地址
+create_section() = 创建一个分区
+create_section(.(path, name) = 创建一个分区\n参数@name可省略
+create_section_same_level() = 创建一个同级分区
+create_section_same_level(.(path, name) = 创建一个同级分区\n参数@name可省略
+create_item() = 创建一个分区
+create_item(.(name, path) = 创建一个项目\n参数@name可省略
+create_section_root() = 创建一个根分区
+create_section_root(.(name) = 创建一个根分区\n参数@name可省略
+get_tree_items() = 获取项目树
+get_tree_items(.dir) = 获取项目树
+get_tree_sections() = 获取分区树
+get_tree_sections(.(dir) = 获取分区树
+get_items() = 列出指定分区下的所有项目
+get_items(.(dir) = 列出指定分区下的所有项目
+load_item() = 加载指定项目 (文本)
+load_item(.(item_path) = 加载指定项目 (文本)
+is_section() = 判断给定的数据库路径是否为分区
+is_section(.(path) =  判断给定的数据库路径是否为分区
+after_reload = 类型: function 更改数据库后触发
+end intellisense***/

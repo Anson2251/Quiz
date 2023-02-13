@@ -1,0 +1,70 @@
+import win.ui;
+
+class choose_knowledge_point{
+	ctor(parent,tParam){
+	/*DSG{{*/
+	this = ..win.form(text="知识点选择";right=759;bottom=469;parent=parent)
+	this.add(
+	cancel={cls="button";text="取消";left=560;top=424;right=648;bottom=456;db=1;dr=1;z=4};
+	confirm={cls="button";text="确定";left=656;top=424;right=744;bottom=456;db=1;default=1;dr=1;z=3};
+	static={cls="static";text="选择知识点";left=16;top=16;right=744;bottom=32;dl=1;dr=1;dt=1;transparent=1;z=2};
+	statusBar={cls="plus";text="正在加载…";left=16;top=392;right=744;bottom=416;align="left";db=1;dl=1;dr=1;edge=1;textPadding={left=8};z=5};
+	treeview={cls="treeview";left=16;top=40;right=744;bottom=392;asel=false;bgcolor=16777215;db=1;dl=1;dr=1;dt=1;edge=1;hscroll=1;vscroll=1;z=1}
+	)
+	/*}}*/
+	
+	var result = "";
+	
+	import libquiz.dataBase;
+	var mainDB = libquiz.dataBase('\\data');
+	
+	this.treeview.onnotify = function(id,code,ptr){
+		select(code) {
+			case 0xFFFFFFFE/*_NM_CLICK*/ {
+				result = this.treeview.getItemPath(this.treeview.hitTest());
+			}
+		}
+	}
+	
+	this.confirm.oncommand = function(id,event){
+		this.endModal(result);
+	}
+	
+	this.cancel.oncommand = function(id,event){
+		this.endModal("");
+	}
+
+    function reloadDB(form){
+		import time.timer;
+		//import libquiz;
+		import math;
+		
+		time.timer.start("timer01");
+		
+		var dataBase_dir = "\data";
+		var exercise_treeList = {};
+		var exercise_amount = 0;
+		
+		exercise_treeList, exercise_amount = mainDB.get_tree_sections();
+		
+		form.treeview.clear();
+		form.treeview.insertTable(exercise_treeList);
+		form.statusBar.text = "已扫描 " + exercise_amount + " 分区, 耗时 " + math.round(time.timer.endTick("timer01")/1000, 2) + "s";
+	}
+	
+	this.onInitDialog = function(hwnd,message,wParam,lParam){
+		this.center();
+		this.setTimeout(function(){
+			reloadDB(this);
+		}, 10);
+	}
+	
+	};
+	
+	
+}
+
+if( !owner ) choose_knowledge_point().doModal();
+/**intellisense()
+choose_knowledge_point() = 窗口类\n!winform.
+end intellisense**/

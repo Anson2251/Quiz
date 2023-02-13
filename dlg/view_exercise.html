@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<meta charset="utf-8">
+<title>查看题目</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="./css/basic_ctrls.css">
+<link rel="stylesheet" href="./css/css_theme.css">
+
+<script src="./js/quizCtrls/editQuestion.js"></script>
+
+<link rel="stylesheet" href="./css/choice_question.css">
+
+<style>
+    html,
+    body {
+        width: 100%;
+        height: calc(100% - 2em);
+        padding: 0;
+        margin: 0;
+    }
+
+    .stem {
+        position: absolute;
+        top: 0;
+        bottom: 5em;
+        left: 0;
+        right: 0;
+
+        padding: 0;
+        margin: 0;
+    }
+
+    .stem>div {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+        right: 1em;
+        bottom: 0em;
+
+        padding: 2em;
+        zoom: 1.1;
+
+        overflow: auto;
+
+        border-radius: var(--border-radius);
+        border: var(--border-style);
+        box-shadow: var(--shadow);
+    }
+
+    .answer {
+        position: absolute;
+
+        height: 5em;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        padding: 0;
+        margin: 0;
+    }
+</style>
+
+</html>
+
+<body>
+    <div class="stem"></div>
+    <div class="answer"></div>
+
+    <script>
+        var aardio = external;
+
+        function view() {       
+            let stem = JSON.parse(aardio.libquiz.unpack_exercise(aardio.exercise.get(), true));
+
+            let answerArea = new quizCtrls.choiceQuestion("body > div.answer", stem.answer.items);
+
+            document.querySelector("body > div.stem").innerHTML = `<div>${stem.text}</div>`;
+        }
+
+        view();
+    </script>
+</body>

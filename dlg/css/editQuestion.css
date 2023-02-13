@@ -1,0 +1,237 @@
+:root {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.quiz-editQuestion {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.quiz-editQuestion > .editorArea {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  right: 16px;
+  height: 15em;
+}
+.quiz-editQuestion > .optionAnswerInput {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(15em + (8px + 16px));
+  height: 10em;
+}
+.quiz-editQuestion > .optionAnswerInput > .option {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 5em;
+  border: 1px solid #888;
+}
+.quiz-editQuestion > .optionAnswerInput > .option > .optionInput {
+  position: absolute;
+  left: 5em;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+.quiz-editQuestion > .optionAnswerInput > .option > .title {
+  position: absolute;
+  left: 0em;
+  top: 8px;
+  bottom: 8px;
+  width: 5em;
+  text-align: center;
+  line-height: calc(5em - (8px * 2));
+  border-right: 1px solid #888;
+  color: #888;
+}
+.quiz-editQuestion > .optionAnswerInput > .answer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5em;
+  bottom: 0;
+  border: 1px solid #888;
+  border-top: none;
+}
+.quiz-editQuestion > .optionAnswerInput > .answer > .answerInput {
+  position: absolute;
+  left: 5em;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+.quiz-editQuestion > .optionAnswerInput > .answer > .title {
+  position: absolute;
+  left: 0em;
+  top: 8px;
+  bottom: 8px;
+  width: 5em;
+  text-align: center;
+  line-height: calc(5em - (8px * 2));
+  border-right: 1px solid #888;
+  color: #888;
+}
+.quiz-editQuestion > .previewArea {
+  position: absolute;
+  left: 16px;
+  right: calc(15em + 8px + 16px);
+  bottom: 16px;
+  top: calc(15em + (5em*2) + 16px + (8px*2));
+}
+.quiz-editQuestion > .previewArea > .preview {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: 1px solid #888;
+}
+.quiz-editQuestion > .previewArea > .preview > p {
+  margin: 0;
+  padding: 4px 0px 4px 0px;
+  display: block;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 0px;
+  color: #888;
+  border-bottom: 1px solid #888;
+}
+.quiz-editQuestion > .previewArea > .preview > div {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(1em + (8px + 8px));
+  bottom: 0;
+}
+.quiz-editQuestion > .previewArea > .preview > div > .stem {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 5em;
+  zoom: 0.7;
+  overflow: auto;
+}
+.quiz-editQuestion > .previewArea > .preview > div > .answer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5em;
+  zoom: 0.7;
+}
+.quiz-editQuestion > .configArea {
+  position: absolute;
+  left: calc(100% - 15em - 16px);
+  right: 16px;
+  bottom: calc((16px + 8px) + 2em);
+  top: calc(15em + (5em*2) + 16px + (8px*2));
+  border: 1px solid #888;
+}
+.quiz-editQuestion > .configArea > p {
+  margin: 0;
+  padding: 4px 0px 4px 0px;
+  display: block;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 0px;
+  color: #888;
+  border-bottom: 1px solid #888;
+}
+.quiz-editQuestion > .configArea > .itemContainer {
+  margin: 0;
+  padding: 4px 0px 4px 0px;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 2em;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div {
+  width: calc(100% - 16px);
+  padding: 0px 8px 0px 8px;
+  height: 2em;
+  line-height: 2em;
+  transition: all 0.2s;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+.quiz-editQuestion > .configArea > .itemContainer > div > label {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div > label > * {
+  margin-left: 4px;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div > label > input[type=checkbox] {
+  zoom: inherit;
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div > label > select {
+  font-size: 0.9em;
+  padding-left: 4px;
+  padding-right: 0px;
+}
+.quiz-editQuestion > .configArea > .itemContainer > div > label > .config-list-path {
+  margin: 0;
+  padding: 0;
+  width: calc(100% - 7em);
+  min-height: calc(1em + 2px);
+  line-height: calc(1em + 2px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px dashed #808080;
+}
+.quiz-editQuestion > .buttonArea {
+  position: absolute;
+  left: calc(100% - 15em - 16px);
+  right: 16px;
+  bottom: 16px;
+  top: calc(100% - (16px + 2em));
+}
+.quiz-editQuestion > .buttonArea > .preview {
+  position: absolute;
+  left: 0;
+  width: calc(50% - (8px / 2));
+  top: 0;
+  bottom: 0;
+  font-size: 0.9em;
+}
+.quiz-editQuestion > .buttonArea > .store {
+  position: absolute;
+  right: 0;
+  width: calc(50% - (8px / 2));
+  top: 0;
+  bottom: 0;
+  font-size: 0.9em;
+}
+.w-e-full-screen-editor {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: 0 !important;
+}
