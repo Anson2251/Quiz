@@ -11,7 +11,7 @@
 本项目将转用 `rust` `Tauri` `React` 进行开发
 
 原因：
-- 适应新的跨平台需求 ( `rust``Tauri (web)` )
+- 适应新的跨平台需求 ( `rust` `Tauri (web)` )
 - 解决性能问题 ( `rust` )
 - 保证项目的安全性
 
